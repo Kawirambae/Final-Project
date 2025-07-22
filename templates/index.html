@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Diabetes Glucose Checker</title>
+</head>
+<body>
+    <h3>Enter Glucose Readings (comma-separated, mmol/L)</h3>
+    <input type="text" id="glucoseInput" placeholder="e.g., 5.2, 6.1, 7.3">
+    <button onclick="submitReadings()">Check Status</button>
+
+    <p id="result"></p>
+
+    <script>
+        function submitReadings() {
+            const input = document.getElementById('glucoseInput').value;
+            const readings = input.split(',').map(x => x.trim());
+
+            fetch('/check', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ readings })
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('result').textContent = data.message || data.error;
+            })
+            .catch(err => {
+                document.getElementById('result').textContent = "Error processing request.";
+            });
+        }
+    </script>
+</body>
+</html>
